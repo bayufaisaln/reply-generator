@@ -155,10 +155,20 @@ Bang:['laptop','notebook','komputer','pc','monitor','keyboard','mouse','ssd','ra
 Kak:['buku','novel','komik','ensiklopedia','kamus','majalah','biografi','mewarnai','dongeng','cerita anak','buku cerita','kitab','modul','soal','cerpen','edukasi']
 };
 
-function detect(text){
-  const low=' '+String(text||'').toLowerCase().replace(/[^a-z0-9]+/g,' ')+' ';
+/* Kata kunci KUAT niche Om (motor, otomotif, sepeda, racing, dll).
+   Jika ada di NAMA produk, hasilnya langsung Om dan tidak bisa dikalahkan
+   kata kunci kategori lain (mis. "sabun cuci motor", "kain lap mobil"). */
+const OM_STRONG=['motor','motoran','motorcycle','sepeda motor','mobil','otomotif','automotive','racing','balap','touring','riding','sepeda','gowes','bike','bicycle','mtb','roadbike','fixie','seli','helm','knalpot','spion','kampas','kopling','karburator','karbu','cdi','ecu','busi','aki','oli','ban luar','ban dalam','velg','jari jari','shock','shockbreaker','shockbreaker','sokbreker','sok','footstep','spakbor','bodykit','cvt','rantai motor','gear set','master rem','rem cakram','rem tromol','piston','bearing','klakson','stang','handgrip','handle grip','jok motor','cover motor','cover mobil','lampu motor','lampu mobil','headlamp','bohlam','wiper','dashcam','dongkrak','sparepart','spare part','suku cadang','honda','yamaha','suzuki','kawasaki','vespa','vario','beat','scoopy','nmax','pcx','aerox','mio','supra','revo','vixion','cb150r','ninja','satria','mobilio','avanza','xenia','innova','brio','jazz','rush','terios','agya','ayla','sigra','calya','pajero','fortuner','triton','hilux','civic','crv','hrv','tmax','xmax','adv','klx','crf','wr155','pertamax','pertalite','jaket riding','sarung tangan motor','sepatu riding','jas hujan motor','gembok motor','kunci motor','tank pad','sticker motor','stiker motor','knalpot racing','busi racing','velg racing']
+/* kata ambigu: tidak dihitung sebagai Om-kuat bila berdiri sendiri */
+.filter(w=>!['sok','jazz','rush','beat','mio','adv','ninja','seli','bike'].includes(w));
+const OM_WEAK=['sok','jazz','rush','beat','mio','adv','ninja','seli','bike'];
+
+function _norm(t){return ' '+String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,' ')+' '}
+function _score(low){
   let best=null,top=0,tie=false,kwHit='';
+  const toy=/ mobil mobilan | mainan /.test(low)&&!/ motor | helm | oli | aki /.test(low);
   for(const sap of Object.keys(KW)){
+    if(toy&&sap==='Om')continue;
     let sc=0,hit='';
     for(const kw of KW[sap]){
       if(low.includes(' '+kw+' ')){const w=kw.split(' ').length;sc+=w;if(!hit||kw.length>hit.length)hit=kw}
@@ -166,8 +176,36 @@ function detect(text){
     if(sc>top){top=sc;best=sap;tie=false;kwHit=hit}
     else if(sc===top&&sc>0){tie=true}
   }
-  if(!best) return {sap:'Bun',kw:'',sure:false};
-  return {sap:best,kw:kwHit,sure:!tie&&top>0};
+  return {best,top,tie,kwHit};
+}
+function _omStrong(low){
+  // mainan "mobil-mobilan" bukan otomotif
+  if(/ mobil mobilan | mainan /.test(low)&&!/ motor | helm | oli | aki /.test(low))return '';
+  for(const kw of OM_STRONG){if(low.includes(' '+kw+' '))return kw}
+  return '';
+}
+/* Deteksi dilakukan bertahap:
+   1) NAMA produk dulu (paling bisa dipercaya). Ada kata kunci Om-kuat -> Om.
+   2) Skor kategori pada nama saja.
+   3) Baru teks lengkap (ulasan/link) sebagai cadangan, dengan Om-kuat tetap diutamakan.
+   Teks ulasan tidak boleh mengalahkan nama produk. */
+function detect(text,name){
+  const nameLow=_norm(name!==undefined?name:'');
+  const allLow=_norm(text);
+  // tahap 1: Om-kuat di nama
+  let h=_omStrong(nameLow);
+  if(h)return {sap:'Om',kw:h,sure:true};
+  // tahap 2: skor pada nama
+  if(nameLow.trim()){
+    const r=_score(nameLow);
+    if(r.best&&r.top>0)return {sap:r.best,kw:r.kwHit,sure:!r.tie};
+  }
+  // tahap 3: teks lengkap
+  h=_omStrong(allLow);
+  if(h)return {sap:'Om',kw:h,sure:true};
+  const r=_score(allLow);
+  if(r.best)return {sap:r.best,kw:r.kwHit,sure:!r.tie&&r.top>0};
+  return {sap:'Bun',kw:'',sure:false};
 }
 
 /* ---------- parser ---------- */
@@ -546,7 +584,7 @@ function buildData(){
   let name=o.name||nameFromLink(o.link||findLink(raw));
   if(!name)name='produk ini';
   const txt=name+' '+raw;
-  const d=detect(txt);
+  const d=detect(txt,name);
   return {
     sap:d.sap||'Bun',
     name:name,
