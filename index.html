@@ -13,7 +13,7 @@
 @media(prefers-color-scheme:dark){:root{--bg:#111316;--card:#1a1d21;--ink:#eceef1;--mute:#9aa1ab;--line:#2b2f35;--soft:#2e1d18;--field:#14171a}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-body{padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 150px);max-width:560px;margin:0 auto}
+body{padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 86px);max-width:560px;margin:0 auto}
 h1{font-size:22px;margin:4px 2px 2px;letter-spacing:-.01em}
 .sub{margin:0 2px 14px;color:var(--mute);font-size:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -76,6 +76,7 @@ nav button.on{color:var(--acc);font-weight:700}
       <button id="btnPaste">Tempel</button>
       <button id="btnClear">Hapus</button>
     </div>
+    <div class="row"><button class="pri" id="btnGen">Generate Reply</button></div>
     <div id="linkState" class="hint" style="margin-top:10px">Link belum ada</div>
   </div>
 
@@ -119,11 +120,9 @@ nav button.on{color:var(--acc);font-weight:700}
     <div class="hint">Memori variasi dipakai supaya kalimat tidak keulang. Reset kalau mau mulai dari nol.</div>
   </div>
   <div class="card">
-    <div class="hint" style="margin:0">Versi 0.3 · Semua diproses di HP, tanpa internet dan tanpa API.</div>
+    <div class="hint" style="margin:0">Versi 0.4 · Semua diproses di HP, tanpa internet dan tanpa API.</div>
   </div>
 </section>
-
-<div class="bar" id="mainBar"><div class="in"><button class="pri" id="btnGen">Generate Reply</button></div></div>
 
 <nav>
   <button data-tab="buat" class="on">Buat</button>
@@ -302,44 +301,44 @@ function fmtPrice(n,style,range){
 
 /* ---------- bank kalimat ---------- */
 const OPEN_SOFT=[
- '{s}, kalau lagi butuh {p}, ini bisa jadi pilihan{e}',
- '{s}, coba deh lirik yang satu ini{e}',
- 'Izin nimbrung ya {s}{e}',
- 'Halo {s}, saya ada referensi nih{e}',
- 'Hai {s}, semoga ini yang lagi dicari ya{e}',
- '{s}, ini boleh dilirik buat jadi opsi{e}',
- 'Nyambung ya {s}, saya ada rekomendasi{e}',
- '{s}, kalau lagi nyari {p}, mungkin ini cocok{e}',
- 'Kebetulan nemu nih {s}, siapa tau pas{e}',
- 'Sekadar share aja {s}, siapa tau cocok{e}',
- 'Nggak maksa ya {s}, cuma info aja{e}'
+ 'Kalau lagi butuh {p}, ini bisa jadi pilihan{e}',
+ 'Coba deh lirik yang satu ini{e}',
+ 'Izin nimbrung ya{e}',
+ 'Halo, saya ada referensi nih{e}',
+ 'Hai, semoga ini yang lagi dicari ya{e}',
+ 'Ini boleh dilirik buat jadi opsi{e}',
+ 'Nyambung ya, saya ada rekomendasi{e}',
+ 'Kalau lagi nyari {p}, mungkin ini cocok{e}',
+ 'Kebetulan nemu nih, siapa tau pas{e}',
+ 'Sekadar share aja, siapa tau cocok{e}',
+ 'Nggak maksa ya, cuma info aja{e}'
 ];
 const OPEN_HARD=[
- '{s}, langsung aja ya:',
- 'Info buat {s}:',
- '{s}, ini lagi menarik nih{e}',
- 'Eh {s}, jangan sampai kelewat yang ini{e}',
- '{s}, ada yang pas nih{e}',
- 'Buat {s} yang lagi cari {p}, ini dia{e}'
+ 'Langsung aja ya:',
+ 'Ada info menarik nih{e}',
+ 'Ini lagi menarik nih{e}',
+ 'Jangan sampai kelewat yang ini ya{e}',
+ 'Ada yang pas nih{e}',
+ 'Buat yang lagi cari {p}, ini dia{e}'
 ];
 const OPEN_NEED=[
- '{s}, lagi cari {need} ya? Pas nih{e}',
- 'Soal {need}, {s}, ini bisa dilirik{e}',
- 'Kalau lagi nyari {need}, coba cek ini {s}{e}',
- '{s}, buat {need}, saya ada referensi{e}',
- 'Lagi cari {need} ya {s}? Kebetulan ada nih{e}'
+ 'Lagi cari {need} ya? Pas nih{e}',
+ 'Soal {need}, ini bisa dilirik{e}',
+ 'Kalau lagi nyari {need}, coba cek ini{e}',
+ 'Buat {need}, saya ada referensi{e}',
+ 'Lagi cari {need} ya? Kebetulan ada nih{e}'
 ];
 const STORY={
- Bun:['Pernah kan {s}, lagi masak eh stok di rumah malah habis','Belanja kebutuhan rumah tuh sering bikin pusing mikirin harga, ya {s}','Saya sendiri biasanya cari yang praktis tapi harganya tetap masuk akal','Ngurus rumah itu banyak banget pengeluarannya, jadi harus pinter-pinter milih','Dulu saya juga sering bingung milih yang pas, makanya biasa cek rating dulu','Sering kan ribet ngurusin yang beginian di rumah?'],
- Om:['Pernah juga bolak-balik nyari yang pas, ujung-ujungnya buang waktu doang','Biasanya saya cek rating sama jumlah terjual dulu sebelum beli','Daripada salah beli terus nyesel, mending liat yang udah banyak dipakai orang','Cari yang pas di kantong tapi tetap awet itu emang PR ya {s}','Saya juga sering bingung milih, makanya biasa baca ulasan dulu','Sering kan nemu barang murah tapi cepat rusak?','Nggak jarang kita ketipu barang yang speknya nggak sesuai, ya {s}','Buat yang hobi ngoprek, ini patut dicek'],
- Bang:['Nyari yang pas sama kebutuhan dan kantong itu emang PR ya {s}','Sebelum beli, biasanya saya bandingin dulu harga di beberapa toko','Salah beli perangkat itu nyesek banget, makanya saya selalu cek rating dulu','Saya juga dulu sering bingung milih, ujungnya baca ulasan dulu','Sering kan nemu barang yang speknya nggak sesuai harga?','Budget mepet tapi pengen performa maksimal, pernah kan {s}?','Buat yang lagi butuh upgrade setup, ini patut dipertimbangkan'],
- Kak:['Kadang nyari bacaan yang pas butuh waktu juga ya {s}','Biasanya saya lihat rating sama ulasannya dulu sebelum beli','Saya juga sering bingung milih mana yang layak dibaca','Cari bacaan bagus itu seru tapi kadang bikin bingung ya','Sering kan bingung cari bacaan yang seru tapi nggak membosankan?','Buat yang lagi belajar atau ngajar, siapa tau ini membantu']
+ Bun:['Pernah kan lagi masak eh stok di rumah malah habis','Belanja kebutuhan rumah tuh sering bikin pusing mikirin harga, ya','Saya sendiri biasanya cari yang praktis tapi harganya tetap masuk akal','Ngurus rumah itu banyak banget pengeluarannya, jadi harus pinter-pinter milih','Dulu saya juga sering bingung milih yang pas, makanya biasa cek rating dulu','Sering kan ribet ngurusin yang beginian di rumah?'],
+ Om:['Pernah juga bolak-balik nyari yang pas, ujung-ujungnya buang waktu doang','Biasanya saya cek rating sama jumlah terjual dulu sebelum beli','Daripada salah beli terus nyesel, mending liat yang udah banyak dipakai orang','Cari yang pas di kantong tapi tetap awet itu emang PR ya','Saya juga sering bingung milih, makanya biasa baca ulasan dulu','Sering kan nemu barang murah tapi cepat rusak?','Nggak jarang kita ketipu barang yang speknya nggak sesuai','Buat yang hobi ngoprek, ini patut dicek'],
+ Bang:['Nyari yang pas sama kebutuhan dan kantong itu emang PR ya','Sebelum beli, biasanya saya bandingin dulu harga di beberapa toko','Salah beli perangkat itu nyesek banget, makanya saya selalu cek rating dulu','Saya juga dulu sering bingung milih, ujungnya baca ulasan dulu','Sering kan nemu barang yang speknya nggak sesuai harga?','Budget mepet tapi pengen performa maksimal, pernah kan?','Buat yang lagi butuh upgrade setup, ini patut dipertimbangkan'],
+ Kak:['Kadang nyari bacaan yang pas butuh waktu juga ya','Biasanya saya lihat rating sama ulasannya dulu sebelum beli','Saya juga sering bingung milih mana yang layak dibaca','Cari bacaan bagus itu seru tapi kadang bikin bingung ya','Sering kan bingung cari bacaan yang seru tapi nggak membosankan?','Buat yang lagi belajar atau ngajar, siapa tau ini membantu']
 };
-const STORY_G=['Namanya belanja online, kadang bingung milih yang mana','Saya biasanya bandingin dulu sebelum mutusin beli','Dulu saya juga sering ragu, makanya sekarang selalu cek detailnya dulu','Wah kebetulan {s}, aku juga dulu sempat nyari yang begini','Sama {s}, aku juga awalnya bingung cari yang pas','{s}, aku juga dulu sempat galau nyari yang kayak gini'];
-const TRANS=['Makanya pas nemu ini, langsung kepikiran {s}','Nah, kebetulan ada yang kayaknya cocok','Dan ketemulah yang ini'];
+const STORY_G=['Namanya belanja online, kadang bingung milih yang mana','Saya biasanya bandingin dulu sebelum mutusin beli','Dulu saya juga sering ragu, makanya sekarang selalu cek detailnya dulu','Wah kebetulan, aku juga dulu sempat nyari yang begini','Sama, aku juga awalnya bingung cari yang pas','Aku juga dulu sempat galau nyari yang kayak gini'];
+const TRANS=['Makanya pas nemu ini, langsung kepikiran buat dibagi','Nah, kebetulan ada yang kayaknya cocok','Dan ketemulah yang ini'];
 
 const RECO_FULL=['{p} ini harganya {h}','Ada {p} di harga {h}','Saya nemu {p}, harganya {h}','{p}, harganya {h}{e}','Namanya {p}, sekarang di {h}','Dengan harga {h}, {p} ini patut dilirik'];
-const RECO_PRICE=['Harganya {h}','Sekarang di harga {h}','Dapatnya di {h}','Harga {h} aja','Harganya di {h}{e}','Cuma {h} lho {s}','{h} aja {s}'];
+const RECO_PRICE=['Harganya {h}','Sekarang di harga {h}','Dapatnya di {h}','Harga {h} aja','Harganya di {h}{e}','Cuma {h} lho','{h} aja'];
 const RECO_NOPRICE_FULL=['Ada {p} nih, boleh dicek{e}','Saya nemu {p}','Coba lihat {p} ini'];
 const RECO_NOPRICE=['Boleh dicek dulu detailnya','Detailnya bisa dilihat dulu ya'];
 const DISC_FULL=['{p} lagi turun dari {hc} jadi {h}','Ada potongan nih, {p} dari {hc} jadi {h}','{p}, harga normalnya {hc}, sekarang {h}'];
@@ -356,8 +355,8 @@ const URG_N=['Harga bisa berubah sewaktu-waktu, jadi cek dulu ya','Mending dicek
 const URG_D=['Mumpung lagi ada potongan{e}','Takutnya keburu naik lagi, mending dicek dulu','Harga segini sayang kalau dilewatin'];
 const URG_S=['Yang beli udah banyak, wajar sih','Peminatnya banyak, jadi mending cek dari sekarang'];
 
-const CLOSE=['Semoga cocok ya {s}{e}','Kalau ada yang mau ditanyain, tanya aja ya','Selamat belanja {s}{e}','Semoga membantu {s}{e}','Moga pas di hati ya{e}'];
-const CTA_SOFT=['Boleh dicek dulu di sini ya:','Link-nya di sini {s}:','Intip dulu aja:','Detailnya bisa dilihat di sini:','Cek di sini ya {s}:','Aku taruh link-nya di sini {s}:','Nih link-nya {s}:'];
+const CLOSE=['Semoga cocok ya{e}','Kalau ada yang mau ditanyain, tanya aja ya','Selamat belanja{e}','Semoga membantu{e}','Moga pas di hati ya{e}'];
+const CTA_SOFT=['Boleh dicek dulu di sini ya:','Link-nya di sini:','Intip dulu aja:','Detailnya bisa dilihat di sini:','Cek di sini ya:','Aku taruh link-nya di sini:','Nih link-nya:'];
 const CTA_HARD=['Cek sekarang:','Langsung gas ke sini:','Ambil di sini sebelum harganya berubah:','Order lewat sini:','Amankan dulu di sini:','Buruan cek sebelum harganya berubah:','Gas cek di sini:'];
 
 const EM={
@@ -406,7 +405,7 @@ function endsEmoji(s){return /[\u{1F000}-\u{1FFFF}\u2300-\u27BF]\uFE0F?$/u.test(
 /* ---------- perakit balasan ---------- */
 function compose(d,opt){
   const sl=SAP[d.sap]||SAP.Kak;
-  const s=sl[Math.floor(rnd()*sl.length)];
+  const s='';
   const hasD=d.coret>0&&d.price>0&&d.coret>d.price;
   const hasR=!!d.rating,hasT=!!d.sold,hasP=d.price>0;
   const stl=opt.style,long=opt.len==='sedang';
@@ -660,7 +659,6 @@ function renderHist(){
 function showTab(t){
   ['buat','riwayat','atur'].forEach(k=>$('#tab-'+k).classList.toggle('hide',k!==t));
   $$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  $('#mainBar').classList.toggle('hide',t!=='buat');
   if(t==='riwayat')renderHist();
   window.scrollTo(0,0);
 }

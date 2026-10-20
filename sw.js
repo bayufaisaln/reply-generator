@@ -1,6 +1,6 @@
 // Service worker sederhana: coba jaringan dulu, jika offline pakai cache.
 // Naikkan angka versi saat index.html diperbarui.
-const CACHE = 'reply-generator-v4';
+const CACHE = 'reply-generator-v5';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
