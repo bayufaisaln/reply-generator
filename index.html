@@ -402,6 +402,34 @@ const rnd=()=>Math.random();
 
 function endsEmoji(s){return /[\u{1F000}-\u{1FFFF}\u2300-\u27BF]\uFE0F?$/u.test(s)}
 
+/* kalimat pembuka (hook): akhiran titik (2-3) ATAU emoticon, hanya 👇 👌 😊 */
+const HOOKS=[
+ {t:'Ready nih',e:'👇'},
+ {t:'Masih ada, cek dulu',e:'👇'},
+ {t:'Lagi ready, buruan cek',e:'👇'},
+ {t:'Stok lagi ada nih',e:'😊'},
+ {t:'Yang dicari ready di sini',e:'👇'},
+ {t:'Nyari laptop gaming murah? Ini dia',e:'👇',lap:1,alt:'Nyari yang bagus tapi murah? Ini dia'},
+ {t:'Ternyata ada yang segini harganya',e:'😊'},
+ {t:'Ini sih layak banget dilirik',e:'👌'},
+ {t:'Nemu yang pas nih',e:'👌'},
+ {t:'Mumpung lagi ada',e:'👇'},
+ {t:'Jangan sampai kehabisan',e:'👇'},
+ {t:'Lagi banyak dicari nih',e:'😊'},
+ {t:'Kak, ini yang dicari bukan',e:'😊',q:1},
+ {t:'Buat yang lagi nyari laptop, cek ini',e:'👇',lap:1,alt:'Buat yang lagi nyari yang begini, cek ini'},
+ {t:'Pas banget buat kamu yang butuh upgrade',e:'👌'}
+];
+function hookOpen(name,useEmo){
+  const isLap=/laptop|notebook/i.test(name||'');
+  const list=HOOKS.map(h=>h.lap&&!isLap?Object.assign({},h,{t:h.alt}):h);
+  const keyArr=list.map(h=>h.t);
+  const t=pick('hook',keyArr);
+  const h=list.find(x=>x.t===t);
+  if(useEmo&&Math.random()<.5)return h.t+(h.q?'?':'')+' '+h.e;
+  return h.t+(Math.random()<.5?'..':'...');
+}
+
 /* ---------- perakit balasan ---------- */
 function compose(d,opt){
   const sl=SAP[d.sap]||SAP.Kak;
@@ -420,8 +448,7 @@ function compose(d,opt){
   // pembuka
   const needOpen=!!d.need&&rnd()<.75;
   if(needOpen)P.open=pick('openN',OPEN_NEED);
-  else if(stl==='hard')P.open=pick('openH',OPEN_HARD);
-  else P.open=pick('openS',OPEN_SOFT);
+  else P.open=hookOpen(d.name,opt.emoji>0);
   const openP=P.open.includes('{p}');
 
   // cerita
