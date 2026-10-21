@@ -472,11 +472,13 @@ function compose(d,opt){
   // variasi urutan blok
   let v=0;
   if(!(stl==='hard'||(stl==='story'&&long))){const r=rnd();v=r<.5?0:(r<.75?1:(openP?2:0))}
+  const O=['o',P.open],R=['r',P.reco],Pf=['x',P.proof],U=['x',P.urg],C=['x',P.close];
+  const ST=P.story.map(x=>['x',x]),EX=P.extra.map(x=>['x',x]);
   let T;
-  if(v===0)T=[P.open,...P.story,P.reco,P.proof,...P.extra,P.urg,P.close];
-  else if(v===1)T=[P.open,P.reco,P.proof,...P.story,...P.extra,P.urg,P.close];
-  else T=[P.open,...P.story,P.proof,P.reco,...P.extra,P.urg,P.close];
-  T=T.filter(Boolean);
+  if(v===0)T=[O,...ST,R,Pf,...EX,U,C];
+  else if(v===1)T=[O,R,Pf,...ST,...EX,U,C];
+  else T=[O,...ST,Pf,R,...EX,U,C];
+  T=T.filter(x=>x[1]);
 
   const cta=stl==='hard'?pick('ctaH',CTA_HARD):pick('ctaS',CTA_SOFT);
 
@@ -499,7 +501,15 @@ function compose(d,opt){
     if(!/[.!?:]$/.test(out)&&!endsEmoji(out))out+='.';
     return out;
   }
-  const body=T.map(fill).filter(Boolean).join(' ');
+  // enter setelah kalimat pembuka (emoji) dan setelah kalimat harga
+  let body='';
+  T.forEach(([k,t])=>{
+    const f=fill(t);if(!f)return;
+    if(body&&!body.endsWith('\n'))body+=' ';
+    body+=f;
+    if(k==='o'||k==='r')body+='\n';
+  });
+  body=body.replace(/\n+$/,'');
   const ctaLine=fill(cta).replace(/\.$/,':')+' '+d.link;
   return body+'\n'+ctaLine;
 }
