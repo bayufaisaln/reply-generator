@@ -1,212 +1,268 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Reply Fb</title>
-<meta name="theme-color" content="#ee4d2d">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Reply Fb">
-<style>
-  :root {
-    --brand: #ee4d2d;
-    --brand-dark: #c93a1d;
-    --ink: #231f1d;
-    --muted: #7a716c;
-    --line: #e6e0db;
-    --paper: #ffffff;
-    --field: #f7f4f1;
-    --ok: #1f8a5b;
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; }
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: var(--ink);
-    background: var(--paper);
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Bagian atas: balasan tampil sebagai gelembung chat */
-  .stage {
-    background: var(--brand);
-    padding: calc(env(safe-area-inset-top, 0px) + 14px) 18px 30px;
-  }
-  .top { display: flex; align-items: center; justify-content: space-between; color: #fff; margin-bottom: 14px; }
-  .top h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .01em; }
-  .top button {
-    background: transparent; border: 1.5px solid rgba(255,255,255,.7); color: #fff;
-    font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px;
-  }
-  .bubble { position: relative; background: #fff; border-radius: 22px; padding: 14px 16px; }
-  .bubble::after {
-    content: ""; position: absolute; left: 26px; bottom: -14px;
-    border: 9px solid transparent; border-top: 16px solid #fff; border-bottom: 0; border-left-width: 0;
-    border-right-width: 18px;
-  }
-  .bubble textarea {
-    width: 100%; border: 0; outline: 0; resize: none; background: transparent;
-    font: inherit; font-size: 17px; line-height: 1.5; color: var(--ink);
-    min-height: 120px; padding: 0; overflow: hidden; white-space: pre-wrap; word-break: break-word;
-  }
-  .bubble textarea::placeholder { color: var(--muted); }
-  .actions { display: flex; gap: 10px; margin-top: 26px; }
-  .actions button {
-    flex: 1; font: inherit; font-size: 16px; font-weight: 700; padding: 14px 10px;
-    border-radius: 14px; border: 0;
-  }
-  #btn-copy { background: var(--ink); color: #fff; flex: 1.4; }
-  #btn-copy.done { background: var(--ok); }
-  #btn-roll { background: rgba(255,255,255,.2); color: #fff; border: 1.5px solid rgba(255,255,255,.75); }
-  .actions button:disabled { opacity: .45; }
-  .actions button:active:not(:disabled) { transform: scale(.98); }
-
-  /* Isian */
-  form { padding: 22px 18px calc(env(safe-area-inset-bottom, 0px) + 28px); display: grid; gap: 16px; max-width: 560px; width: 100%; margin: 0 auto; }
-  label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
-  label small { font-weight: 400; color: var(--muted); }
-  input {
-    width: 100%; font: inherit; font-size: 16px; color: var(--ink);
-    background: var(--field); border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px;
-  }
-  .price { position: relative; }
-  .price span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
-  .price input { padding-left: 42px; }
-  input:focus-visible, button:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
-  input:focus { border-color: var(--brand); background: #fff; }
-  .hint { font-size: 13px; color: var(--muted); margin: 0; }
-
-  @media (min-width: 640px) {
-    .stage { padding-left: calc(50% - 280px); padding-right: calc(50% - 280px); }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reply Fb</title>
+    <meta name="theme-color" content="#1877F2">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <style>
+        :root {
+            --primary: #1877F2;
+            --primary-dark: #145dbf;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1c1e21;
+            --text-secondary: #65676b;
+            --danger: #e41e3f;
+            --success: #42b72a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 800;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd0d5;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-secondary { background-color: #e4e6eb; color: var(--text); }
+        .btn-secondary:hover { background-color: #d8dadf; }
+        .btn-danger { background-color: #ffebee; color: var(--danger); }
+        .btn-danger:hover { background-color: #ffcdd2; }
+        .btn-primary { 
+            background-color: var(--primary); 
+            color: white; 
+            width: 100%; 
+            padding: 14px;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-success { 
+            background-color: var(--success); 
+            color: white; 
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-success:hover { background-color: #36a420; }
+        .hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+    </style>
 </head>
 <body>
-  <section class="stage">
-    <div class="top">
-      <h1>Reply Fb</h1>
-      <button type="button" id="btn-clear">Bersihkan</button>
+
+    <div class="header">
+        <h1>💬 Reply Fb</h1>
     </div>
-    <div class="bubble">
-      <textarea id="out" aria-label="Balasan" placeholder="Isi nama produk di bawah, balasan langsung muncul di sini."></textarea>
+
+    <div class="card">
+        <label for="inputText">1. Tempel Teks Produk Di Sini</label>
+        <textarea id="inputText" placeholder="Contoh: Cek Maxx1 Ban Motor Matic Tubeless Ring 14 Retread Tyre untuk Beat dengan harga Rp175.000. Dapatkan di Shopee sekarang! https://s.shopee.co.id/5LD0kXc0xS"></textarea>
+        
+        <div class="button-group">
+            <button class="btn-secondary" onclick="pasteText()">📋 Tempel</button>
+            <button class="btn-danger" onclick="clearText()">🗑️ Hapus</button>
+        </div>
+        <div class="hint">Tips: Pastikan izin clipboard diberikan saat pertama kali menempel.</div>
     </div>
-    <div class="actions">
-      <button type="button" id="btn-roll" disabled>Ganti redaksi</button>
-      <button type="button" id="btn-copy" disabled>Salin balasan</button>
+
+    <button class="btn-primary" onclick="generateReply()">✨ Generate Balasan</button>
+
+    <div class="card" style="margin-top: 16px;">
+        <label for="outputText">2. Hasil Rekomendasi Balasan</label>
+        <textarea id="outputText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+        <button class="btn-success" onclick="copyText()">📋 Salin Balasan</button>
     </div>
-  </section>
 
-  <form id="form" autocomplete="off" onsubmit="return false">
-    <label>Nama produk
-      <input id="name" type="text" enterkeyhint="next" placeholder="Contoh: Kabel Data Type C Fast Charging">
-    </label>
-    <label>Harga
-      <div class="price"><span>Rp</span><input id="price" type="text" inputmode="numeric" enterkeyhint="next" placeholder="77.001"></div>
-      <small>Kalau harganya rentang, cukup tulis yang terendah.</small>
-    </label>
-    <label>Link affiliate
-      <input id="link" type="url" enterkeyhint="done" placeholder="https://s.shopee.co.id/...">
-      <small>Kosongkan kalau link ditaruh di komentar.</small>
-    </label>
-    <p class="hint">Balasan di atas bisa diketuk dan diedit langsung sebelum disalin.</p>
-  </form>
+    <script>
+        // --- KONFIGURASI VARIASI ---
+        const openings = [
+            'READY', 'READY STOCK', 'Ready', 'Ready ya', 
+            'Stok ready', 'Stok aman', 'Masih ready', 'Masih tersedia', 
+            'Tersedia', 'Available', 'Barang ready', 'Ready stock'
+        ];
+        let lastOpening = '';
 
-<script>
-(() => {
-  const $ = (id) => document.getElementById(id);
-  const out = $('out'), nameEl = $('name'), priceEl = $('price'), linkEl = $('link');
-  const btnCopy = $('btn-copy'), btnRoll = $('btn-roll');
+        const priceTemplates = [
+            '{price}', 'Harga {price}', 'Cuma {price}', 'Mulai {price}', 
+            '{price} aja', 'Hanya {price}', 'Harga mulai {price}'
+        ];
 
-  // Bank redaksi: tanpa sapaan
-  const BANK = {
-    openers: ['READY', 'READY STOCK', 'Ready', 'Ready ya', 'Stok ready', 'Stok aman', 'Masih ready', 'Masih tersedia', 'Tersedia', 'Available', 'Barang ready', 'Ready stock'],
-    prices: ['Rp{p}', 'Harga Rp{p}', 'Cuma Rp{p}', 'Mulai Rp{p}', 'Rp{p} aja', 'Hanya Rp{p}', 'Harga mulai Rp{p}'],
-    cta: ['Cek di sini 👇', 'Silakan cek 👇', 'Order di sini 👇', 'Langsung order 👇', 'Link 👇', 'Cek link 👇', 'Bisa langsung order 👇', 'Checkout di sini 👇', 'Detail di sini 👇', 'Pesan di sini 👇'],
-    ctaNo: ['Link ada di komentar ya', 'Link di komentar ya', 'Cek link di komentar', 'Link order di komentar']
-  };
+        const ctas = [
+            'Cek di sini 👇', 'Silakan cek 👇', 'Order di sini 👇', 
+            'Langsung order 👇', 'Link 👇', 'Cek link 👇', 
+            'Ambil di sini 👇', 'Checkout di sini 👇', 'Dapatkan di sini 👇', 'Beli di sini 👇'
+        ];
 
-  // Pilihan redaksi dikunci sampai "Ganti redaksi" ditekan, supaya teks tidak berubah-ubah saat mengetik
-  const sel = {}, last = {};
-  const rnd = (n) => Math.floor(Math.random() * n);
-  function roll() {
-    for (const k of Object.keys(BANK)) {
-      let i;
-      do { i = rnd(BANK[k].length); } while (i === last[k] && BANK[k].length > 1);
-      sel[k] = last[k] = i;
-    }
-  }
+        // --- FUNGSI UTILITAS ---
+        function getRandomOpening() {
+            let pick;
+            do {
+                pick = openings[Math.floor(Math.random() * openings.length)];
+            } while (pick === lastOpening && openings.length > 1);
+            lastOpening = pick;
+            return pick;
+        }
 
-  // Maksimal 6 kata, teks dalam [ ] dan ( ) dibuang
-  function shortName(title) {
-    const t = title.replace(/\[[^\]]*\]|\([^)]*\)/g, ' ').replace(/[^\w\s\-./]/g, ' ').replace(/\s+/g, ' ').trim();
-    return t.split(' ').slice(0, 6).join(' ');
-  }
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('inputText').value = text;
+            } catch (err) {
+                alert('Gagal menempel. Pastikan Anda memberikan izin clipboard atau tempel manual (Ctrl+V / Tahan lalu Tempel).');
+            }
+        }
 
-  // "77001" atau "Rp77.001 - Rp97.501" -> "77.001"
-  function formatPrice(raw) {
-    const first = String(raw).split(/[-–—]/)[0];
-    const digits = first.replace(/\D/g, '');
-    return digits ? new Intl.NumberFormat('id-ID').format(parseInt(digits, 10)) : '';
-  }
+        function clearText() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        }
 
-  function grow() { out.style.height = 'auto'; out.style.height = Math.max(120, out.scrollHeight) + 'px'; }
+        function generateReply() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) {
+                alert('Masukkan atau tempel teks produk terlebih dahulu!');
+                return;
+            }
 
-  function render() {
-    const name = shortName(nameEl.value);
-    const price = formatPrice(priceEl.value);
-    const link = linkEl.value.trim();
-    if (!name) {
-      out.value = '';
-    } else {
-      const lines = [BANK.openers[sel.openers] + ', ' + name + ' ✅'];
-      if (price) lines.push(BANK.prices[sel.prices].replace('{p}', price));
-      lines.push(link ? BANK.cta[sel.cta] : BANK.ctaNo[sel.ctaNo]);
-      if (link) lines.push(link);
-      out.value = lines.join('\n');
-    }
-    btnCopy.disabled = btnRoll.disabled = !name;
-    grow();
-  }
+            // 1. Ekstrak Link (URL)
+            const linkMatch = input.match(/https?:\/\/[^\s]+/);
+            const link = linkMatch ? linkMatch[0] : 'https://s.shopee.co.id/xxxx';
 
-  nameEl.addEventListener('input', render);
-  linkEl.addEventListener('input', render);
-  priceEl.addEventListener('input', () => {
-    const p = formatPrice(priceEl.value);
-    priceEl.value = p;
-    render();
-  });
-  out.addEventListener('input', grow);
+            // 2. Ekstrak Harga (format Rp...)
+            const priceMatch = input.match(/Rp[\d\.]+/);
+            const price = priceMatch ? priceMatch[0] : 'Rp0';
 
-  btnRoll.addEventListener('click', () => { roll(); render(); });
+            // 3. Ekstrak Nama Produk (Maksimal 6 kata, buang [] dan ())
+            let cleanText = input
+                .replace(/\[.*?\]/g, '')       // Hapus teks dalam [...]
+                .replace(/\(.*?\)/g, '')       // Hapus teks dalam (...)
+                .replace(/https?:\/\/[^\s]+/g, '') // Hapus link
+                .replace(/dengan harga.*/i, '')    // Hapus "dengan harga..." ke bawah
+                .replace(/Dapatkan di Shopee sekarang!/i, '') // Hapus frasa umum affiliate
+                .trim();
 
-  btnCopy.addEventListener('click', async () => {
-    const text = out.value;
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (e) {
-      out.focus(); out.select(); document.execCommand('copy'); out.setSelectionRange(0, 0);
-    }
-    btnCopy.textContent = 'Tersalin';
-    btnCopy.classList.add('done');
-    setTimeout(() => { btnCopy.textContent = 'Salin balasan'; btnCopy.classList.remove('done'); }, 1800);
-  });
+            // Pecah menjadi kata-kata
+            let words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            
+            // Hapus kata perintah umum di awal jika ada (opsional, agar nama produk lebih bersih)
+            if (words.length > 0 && (words[0].toLowerCase() === 'cek' || words[0].toLowerCase() === 'jual')) {
+                words = words.slice(1);
+            }
+            
+            // Ambil maksimal 6 kata
+            const productName = words.slice(0, 6).join(' ') || 'Produk';
 
-  $('btn-clear').addEventListener('click', () => {
-    nameEl.value = priceEl.value = linkEl.value = '';
-    roll(); render(); nameEl.focus();
-  });
+            // 4. Acak Variasi
+            const opening = getRandomOpening();
+            const priceTemplate = priceTemplates[Math.floor(Math.random() * priceTemplates.length)];
+            const formattedPrice = priceTemplate.replace('{price}', price);
+            const cta = ctas[Math.floor(Math.random() * ctas.length)];
 
-  roll(); render();
+            // 5. Susun Output
+            const output = `${opening}, ${productName} ✅\n${formattedPrice}\n${cta}\n${link}`;
+            
+            document.getElementById('outputText').value = output;
+        }
 
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-})();
-</script>
+        async function copyText() {
+            const outputText = document.getElementById('outputText');
+            if (!outputText.value) return;
+            
+            outputText.select();
+            outputText.setSelectionRange(0, 99999); // Untuk mobile
+            
+            try {
+                await navigator.clipboard.writeText(outputText.value);
+                // Feedback visual sementara pada tombol
+                const btn = document.querySelector('.btn-success');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Berhasil Disalin!';
+                btn.style.backgroundColor = '#36a420';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = '';
+                }, 1500);
+            } catch (err) {
+                document.execCommand('copy'); // Fallback
+                alert('Berhasil disalin!');
+            }
+        }
+
+        // --- SERVICE WORKER REGISTRATION ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
