@@ -1,5 +1,5 @@
-// Service worker Reply Fb: online dulu (supaya hasil edit langsung terlihat), cadangan dari cache saat offline
-const CACHE = 'reply-fb-v4';
+// Service worker Reply Fb: online dulu, cadangan dari cache saat offline
+const CACHE = 'reply-fb-v5';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
