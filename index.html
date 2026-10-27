@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reply Fb</title>
     <meta name="theme-color" content="#1877F2">
+    <meta name="apple-mobile-web-app-title" content="Reply Fb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <style>
@@ -27,92 +29,61 @@
             max-width: 600px;
             margin: 0 auto;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-        }
-        .header h1 {
-            color: var(--primary);
-            font-size: 24px;
-            font-weight: 800;
-        }
+        .header { text-align: center; margin-bottom: 20px; padding: 10px; }
+        .header h1 { color: var(--primary); font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
         .card {
             background: var(--card);
             border-radius: 12px;
             padding: 16px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 16px;
         }
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-        }
+        label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text); }
         textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccd0d5;
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 100px;
-            transition: border-color 0.2s;
+            width: 100%; padding: 12px; border: 1.5px solid #ccd0d5; border-radius: 8px;
+            font-size: 15px; font-family: inherit; resize: vertical; min-height: 100px; 
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        .button-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
+        textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15); }
+        .button-group { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         button {
-            flex: 1;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
-        button:active { transform: scale(0.98); }
+        button:active { transform: scale(0.97); }
         .btn-secondary { background-color: #e4e6eb; color: var(--text); }
         .btn-secondary:hover { background-color: #d8dadf; }
         .btn-danger { background-color: #ffebee; color: var(--danger); }
         .btn-danger:hover { background-color: #ffcdd2; }
         .btn-primary { 
-            background-color: var(--primary); 
-            color: white; 
-            width: 100%; 
-            padding: 14px;
-            font-size: 16px;
-            margin-top: 8px;
+            background-color: var(--primary); color: white; width: 100%; 
+            padding: 14px; font-size: 16px; font-weight: 700; margin-top: 8px;
+            box-shadow: 0 2px 4px rgba(24, 119, 242, 0.3);
         }
         .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-success { 
-            background-color: var(--success); 
-            color: white; 
-            width: 100%;
-            margin-top: 10px;
+        .hint { font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.4; }
+        
+        .option-card {
+            background: #f7f8fa; border: 1px solid #e4e6eb; border-radius: 10px;
+            padding: 14px; margin-bottom: 12px; position: relative;
         }
-        .btn-success:hover { background-color: #36a420; }
-        .hint {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 6px;
-            line-height: 1.4;
+        .option-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
+        .option-label { font-size: 16px; font-weight: 700; color: var(--text); }
+        .style-badge {
+            font-size: 12px; font-weight: 700; color: var(--primary);
+            background: #e7f3ff; padding: 4px 10px; border-radius: 20px;
+        }
+        .option-text {
+            font-size: 14px; line-height: 1.5; color: var(--text);
+            white-space: pre-wrap; margin-bottom: 12px; word-break: break-word;
+            background: white; padding: 12px; border-radius: 8px; border: 1px solid #e4e6eb;
+        }
+        .btn-copy { background-color: var(--success); color: white; width: 100%; padding: 10px; font-size: 14px; font-weight: 600; }
+        .btn-copy:hover { background-color: #36a420; }
+        .btn-copy.copied { background-color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -122,26 +93,32 @@
     </div>
 
     <div class="card">
-        <label for="inputText">1. Tempel Teks Produk Di Sini</label>
-        <textarea id="inputText" placeholder="Contoh: Cek Maxx1 Ban Motor Matic Tubeless Ring 14 Retread Tyre untuk Beat dengan harga Rp175.000. Dapatkan di Shopee sekarang! https://s.shopee.co.id/5LD0kXc0xS"></textarea>
+        <label for="inputText">Informasi Produk</label>
+        <textarea id="inputText" placeholder="Tempel teks produk di sini.."></textarea>
         
         <div class="button-group">
             <button class="btn-secondary" onclick="pasteText()">📋 Tempel</button>
-            <button class="btn-danger" onclick="clearText()">🗑️ Hapus</button>
+            <button class="btn-danger" onclick="clearText()">️ Hapus</button>
         </div>
-        <div class="hint">Tips: Pastikan izin clipboard diberikan saat pertama kali menempel.</div>
+        <div class="hint">💡 Tips: Tekan lama di area teks lalu pilih "Tempel" jika tombol otomatis tidak merespons.</div>
     </div>
 
-    <button class="btn-primary" onclick="generateReply()">✨ Generate Balasan</button>
+    <button class="btn-primary" onclick="generateReply()">✨ Generate Reply</button>
 
-    <div class="card" style="margin-top: 16px;">
-        <label for="outputText">2. Hasil Rekomendasi Balasan</label>
-        <textarea id="outputText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
-        <button class="btn-success" onclick="copyText()">📋 Salin Balasan</button>
+    <div id="outputContainer" style="margin-top: 20px; display: none;">
+        <div class="option-header">
+            <div class="option-label">Hasil Rekomendasi</div>
+            <div class="style-badge" id="styleBadge">Gaya Standar</div>
+        </div>
+        
+        <div class="option-card">
+            <div class="option-text" id="singleOutput"></div>
+            <button class="btn-copy" onclick="copyOption('singleOutput', this)"> Salin Balasan</button>
+        </div>
+        <div class="hint" style="text-align: center; margin-top: 10px;">Kurang suka? Tekan tombol <b>Generate Reply</b> lagi untuk gaya acak lainnya!</div>
     </div>
 
     <script>
-        // --- KONFIGURASI VARIASI ---
         const openings = [
             'READY', 'READY STOCK', 'Ready', 'Ready ya', 
             'Stok ready', 'Stok aman', 'Masih ready', 'Masih tersedia', 
@@ -160,7 +137,6 @@
             'Ambil di sini 👇', 'Checkout di sini 👇', 'Dapatkan di sini 👇', 'Beli di sini 👇'
         ];
 
-        // --- FUNGSI UTILITAS ---
         function getRandomOpening() {
             let pick;
             do {
@@ -170,92 +146,120 @@
             return pick;
         }
 
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         async function pasteText() {
             try {
                 const text = await navigator.clipboard.readText();
                 document.getElementById('inputText').value = text;
             } catch (err) {
-                alert('Gagal menempel. Pastikan Anda memberikan izin clipboard atau tempel manual (Ctrl+V / Tahan lalu Tempel).');
+                alert('Gagal menempel. Silakan tempel manual (Tekan lama di kolom teks lalu pilih Tempel).');
             }
         }
 
         function clearText() {
             document.getElementById('inputText').value = '';
-            document.getElementById('outputText').value = '';
+            document.getElementById('outputContainer').style.display = 'none';
+        }
+
+        function extractProductInfo(input) {
+            const linkMatch = input.match(/https?:\/\/[^\s]+/);
+            const link = linkMatch ? linkMatch[0] : 'https://s.shopee.co.id/xxxx';
+
+            const priceMatch = input.match(/Rp[\d\.]+/);
+            const price = priceMatch ? priceMatch[0] : 'Rp0';
+
+            let cleanText = input
+                .replace(/\[.*?\]/g, '')       
+                .replace(/\(.*?\)/g, '')       
+                .replace(/https?:\/\/[^\s]+/g, '') 
+                .replace(/dengan harga.*/i, '')    
+                .replace(/Dapatkan di Shopee sekarang!/i, '') 
+                .trim();
+
+            let words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            
+            if (words.length > 0 && (words[0].toLowerCase() === 'cek' || words[0].toLowerCase() === 'jual')) {
+                words = words.slice(1);
+            }
+            
+            const productName = words.slice(0, 6).join(' ') || 'Produk';
+
+            return { link, price, productName };
         }
 
         function generateReply() {
             const input = document.getElementById('inputText').value;
             if (!input.trim()) {
-                alert('Masukkan atau tempel teks produk terlebih dahulu!');
+                alert('Silakan tempel atau ketik informasi produk terlebih dahulu!');
                 return;
             }
 
-            // 1. Ekstrak Link (URL)
-            const linkMatch = input.match(/https?:\/\/[^\s]+/);
-            const link = linkMatch ? linkMatch[0] : 'https://s.shopee.co.id/xxxx';
-
-            // 2. Ekstrak Harga (format Rp...)
-            const priceMatch = input.match(/Rp[\d\.]+/);
-            const price = priceMatch ? priceMatch[0] : 'Rp0';
-
-            // 3. Ekstrak Nama Produk (Maksimal 6 kata, buang [] dan ())
-            let cleanText = input
-                .replace(/\[.*?\]/g, '')       // Hapus teks dalam [...]
-                .replace(/\(.*?\)/g, '')       // Hapus teks dalam (...)
-                .replace(/https?:\/\/[^\s]+/g, '') // Hapus link
-                .replace(/dengan harga.*/i, '')    // Hapus "dengan harga..." ke bawah
-                .replace(/Dapatkan di Shopee sekarang!/i, '') // Hapus frasa umum affiliate
-                .trim();
-
-            // Pecah menjadi kata-kata
-            let words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            const info = extractProductInfo(input);
             
-            // Hapus kata perintah umum di awal jika ada (opsional, agar nama produk lebih bersih)
-            if (words.length > 0 && (words[0].toLowerCase() === 'cek' || words[0].toLowerCase() === 'jual')) {
-                words = words.slice(1);
+            // Acak 1 dari 3 gaya
+            const style = Math.floor(Math.random() * 3) + 1;
+            let resultText = '';
+            let styleName = '';
+
+            if (style === 1) {
+                styleName = 'Gaya Standar';
+                const op1Opening = getRandomOpening();
+                const op1Price = getRandomItem(priceTemplates).replace('{price}', info.price);
+                const op1Cta = getRandomItem(ctas);
+                resultText = `${op1Opening}, ${info.productName} ✅\n${op1Price}\n${op1Cta}\n${info.link}`;
+            } else if (style === 2) {
+                styleName = 'Singkat & Padat';
+                const op2Opening = getRandomItem(['Ready ✅', 'Stok aman ✅', 'Masih ready ✅']);
+                resultText = `${op2Opening} ${info.productName}\n${info.price}\n${info.link}`;
+            } else {
+                styleName = 'Antusias & Ramah';
+                const op3Opening = getRandomItem(['Halo! Stok masih tersedia', 'Hai kak, barang masih ready', 'Yuk, masih bisa diorder']);
+                resultText = `${op3Opening} ✅\n${info.productName}\nCuma ${info.price} lho!\nLangsung amankan di sini 👇\n${info.link}`;
             }
-            
-            // Ambil maksimal 6 kata
-            const productName = words.slice(0, 6).join(' ') || 'Produk';
 
-            // 4. Acak Variasi
-            const opening = getRandomOpening();
-            const priceTemplate = priceTemplates[Math.floor(Math.random() * priceTemplates.length)];
-            const formattedPrice = priceTemplate.replace('{price}', price);
-            const cta = ctas[Math.floor(Math.random() * ctas.length)];
+            document.getElementById('singleOutput').textContent = resultText;
+            document.getElementById('styleBadge').textContent = styleName;
+            document.getElementById('outputContainer').style.display = 'block';
 
-            // 5. Susun Output
-            const output = `${opening}, ${productName} ✅\n${formattedPrice}\n${cta}\n${link}`;
-            
-            document.getElementById('outputText').value = output;
+            // Reset tombol copy
+            const btn = document.querySelector('.btn-copy');
+            btn.textContent = '📋 Salin Balasan';
+            btn.classList.remove('copied');
+
+            // Scroll halus ke hasil
+            document.getElementById('outputContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        async function copyText() {
-            const outputText = document.getElementById('outputText');
-            if (!outputText.value) return;
-            
-            outputText.select();
-            outputText.setSelectionRange(0, 99999); // Untuk mobile
-            
+        async function copyOption(elementId, btnElement) {
+            const text = document.getElementById(elementId).textContent;
             try {
-                await navigator.clipboard.writeText(outputText.value);
-                // Feedback visual sementara pada tombol
-                const btn = document.querySelector('.btn-success');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '✅ Berhasil Disalin!';
-                btn.style.backgroundColor = '#36a420';
+                await navigator.clipboard.writeText(text);
+                btnElement.textContent = '✅ Berhasil Disalin!';
+                btnElement.classList.add('copied');
                 setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.backgroundColor = '';
+                    btnElement.textContent = '📋 Salin Balasan';
+                    btnElement.classList.remove('copied');
                 }, 1500);
             } catch (err) {
-                document.execCommand('copy'); // Fallback
-                alert('Berhasil disalin!');
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                btnElement.textContent = '✅ Berhasil Disalin!';
+                btnElement.classList.add('copied');
+                setTimeout(() => {
+                    btnElement.textContent = '📋 Salin Balasan';
+                    btnElement.classList.remove('copied');
+                }, 1500);
             }
         }
 
-        // --- SERVICE WORKER REGISTRATION ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')

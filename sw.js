@@ -1,9 +1,11 @@
-// Service worker Reply Fb: online dulu (supaya hasil edit di GitHub langsung terlihat), cadangan dari cache saat offline
-const CACHE = 'reply-fb-v2';
+// Service worker Reply Fb: online dulu (supaya hasil edit langsung terlihat), cadangan dari cache saat offline
+const CACHE = 'reply-fb-v4';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
+
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
@@ -11,6 +13,7 @@ self.addEventListener('activate', (e) => {
     .then(() => self.clients.claim())
   );
 });
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
