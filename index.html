@@ -11,9 +11,9 @@
     
     <!-- Favicon Inline (Langsung muncul di tab browser tanpa file eksternal) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231877F2'/><path d='M25 35 h50 a8 8 0 0 1 8 8 v25 a8 8 0 0 1 -8 8 h-35 l-12 12 v-12 h-3 a8 8 0 0 1 -8 -8 v-25 a8 8 0 0 1 8 -8 z' fill='white'/><path d='M58 45 h-6 a6 6 0 0 0 -6 6 v6 h-4 v8 h4 v16 h8 v-16 h6 l2 -8 h-8 v-6 a2 2 0 0 1 2 -2 h6 v-8 z' fill='%231877F2'/></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231877F2'/><path d='M25 35 h50 a8 8 0 0 1 8 8 v25 a8 8 0 0 1 -8 8 h-35 l-12 12 v-12 h-3 a8 8 0 0 1 -8 -8 v-25 a8 8 0 0 1 8 -8 z' fill='white'/><path d='M58 45 h-6 a6 6 0 0 0 -6 6 v6 h-4 v8 h4 v16 h8 v-16 h6 l2 -8 h-8 v-6 a2 2 0 0 1 2 -2 h6 v-8 z' fill='%231877F2'/></svg>">
+    <link rel="apple-touch-icon" href="icon-192.png">
     
-    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="manifest" href="manifest.json">
     <style>
         :root {
             --primary: #1877F2;
@@ -103,7 +103,7 @@
         
         <div class="button-group">
             <button class="btn-secondary" onclick="pasteText()">📋 Tempel</button>
-            <button class="btn-danger" onclick="clearText()">️ Hapus</button>
+            <button class="btn-danger" onclick="clearText()">🗑️ Hapus</button>
         </div>
         <div class="hint">💡 Tips: Tekan lama di area teks lalu pilih "Tempel" jika tombol otomatis tidak merespons.</div>
     </div>
@@ -241,7 +241,7 @@
                 btnElement.textContent = '✅ Berhasil Disalin!';
                 btnElement.classList.add('copied');
                 setTimeout(() => {
-                    btnElement.textContent = ' Salin Balasan';
+                    btnElement.textContent = '📋 Salin Balasan';
                     btnElement.classList.remove('copied');
                 }, 1500);
             } catch (err) {
@@ -255,7 +255,7 @@
                 btnElement.textContent = '✅ Berhasil Disalin!';
                 btnElement.classList.add('copied');
                 setTimeout(() => {
-                    btnElement.textContent = ' Salin Balasan';
+                    btnElement.textContent = '📋 Salin Balasan';
                     btnElement.classList.remove('copied');
                 }, 1500);
             }
