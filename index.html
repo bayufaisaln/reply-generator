@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reply Fb</title>
+<meta name="theme-color" content="#ee4d2d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Reply Fb">
+<style>
+  :root {
+    --brand: #ee4d2d;
+    --brand-dark: #c93a1d;
+    --ink: #231f1d;
+    --muted: #7a716c;
+    --line: #e6e0db;
+    --paper: #ffffff;
+    --field: #f7f4f1;
+    --ok: #1f8a5b;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Bagian atas: balasan tampil sebagai gelembung chat */
+  .stage {
+    background: var(--brand);
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 18px 30px;
+  }
+  .top { display: flex; align-items: center; justify-content: space-between; color: #fff; margin-bottom: 14px; }
+  .top h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .01em; }
+  .top button {
+    background: transparent; border: 1.5px solid rgba(255,255,255,.7); color: #fff;
+    font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px;
+  }
+  .bubble { position: relative; background: #fff; border-radius: 22px; padding: 14px 16px; }
+  .bubble::after {
+    content: ""; position: absolute; left: 26px; bottom: -14px;
+    border: 9px solid transparent; border-top: 16px solid #fff; border-bottom: 0; border-left-width: 0;
+    border-right-width: 18px;
+  }
+  .bubble textarea {
+    width: 100%; border: 0; outline: 0; resize: none; background: transparent;
+    font: inherit; font-size: 17px; line-height: 1.5; color: var(--ink);
+    min-height: 120px; padding: 0; overflow: hidden; white-space: pre-wrap; word-break: break-word;
+  }
+  .bubble textarea::placeholder { color: var(--muted); }
+  .actions { display: flex; gap: 10px; margin-top: 26px; }
+  .actions button {
+    flex: 1; font: inherit; font-size: 16px; font-weight: 700; padding: 14px 10px;
+    border-radius: 14px; border: 0;
+  }
+  #btn-copy { background: var(--ink); color: #fff; flex: 1.4; }
+  #btn-copy.done { background: var(--ok); }
+  #btn-roll { background: rgba(255,255,255,.2); color: #fff; border: 1.5px solid rgba(255,255,255,.75); }
+  .actions button:disabled { opacity: .45; }
+  .actions button:active:not(:disabled) { transform: scale(.98); }
+
+  /* Isian */
+  form { padding: 22px 18px calc(env(safe-area-inset-bottom, 0px) + 28px); display: grid; gap: 16px; max-width: 560px; width: 100%; margin: 0 auto; }
+  label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+  label small { font-weight: 400; color: var(--muted); }
+  input {
+    width: 100%; font: inherit; font-size: 16px; color: var(--ink);
+    background: var(--field); border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px;
+  }
+  .price { position: relative; }
+  .price span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+  .price input { padding-left: 42px; }
+  input:focus-visible, button:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+  input:focus { border-color: var(--brand); background: #fff; }
+  .hint { font-size: 13px; color: var(--muted); margin: 0; }
+
+  @media (min-width: 640px) {
+    .stage { padding-left: calc(50% - 280px); padding-right: calc(50% - 280px); }
+  }
+</style>
+</head>
+<body>
+  <section class="stage">
+    <div class="top">
+      <h1>Reply Fb</h1>
+      <button type="button" id="btn-clear">Bersihkan</button>
+    </div>
+    <div class="bubble">
+      <textarea id="out" aria-label="Balasan" placeholder="Isi nama produk di bawah, balasan langsung muncul di sini."></textarea>
+    </div>
+    <div class="actions">
+      <button type="button" id="btn-roll" disabled>Ganti redaksi</button>
+      <button type="button" id="btn-copy" disabled>Salin balasan</button>
+    </div>
+  </section>
+
+  <form id="form" autocomplete="off" onsubmit="return false">
+    <label>Nama produk
+      <input id="name" type="text" enterkeyhint="next" placeholder="Contoh: Kabel Data Type C Fast Charging">
+    </label>
+    <label>Harga
+      <div class="price"><span>Rp</span><input id="price" type="text" inputmode="numeric" enterkeyhint="next" placeholder="77.001"></div>
+      <small>Kalau harganya rentang, cukup tulis yang terendah.</small>
+    </label>
+    <label>Link affiliate
+      <input id="link" type="url" enterkeyhint="done" placeholder="https://s.shopee.co.id/...">
+      <small>Kosongkan kalau link ditaruh di komentar.</small>
+    </label>
+    <p class="hint">Balasan di atas bisa diketuk dan diedit langsung sebelum disalin.</p>
+  </form>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const out = $('out'), nameEl = $('name'), priceEl = $('price'), linkEl = $('link');
+  const btnCopy = $('btn-copy'), btnRoll = $('btn-roll');
+
+  // Bank redaksi: tanpa sapaan
+  const BANK = {
+    openers: ['READY', 'READY STOCK', 'Ready', 'Ready ya', 'Stok ready', 'Stok aman', 'Masih ready', 'Masih tersedia', 'Tersedia', 'Available', 'Barang ready', 'Ready stock'],
+    prices: ['Rp{p}', 'Harga Rp{p}', 'Cuma Rp{p}', 'Mulai Rp{p}', 'Rp{p} aja', 'Hanya Rp{p}', 'Harga mulai Rp{p}'],
+    cta: ['Cek di sini 👇', 'Silakan cek 👇', 'Order di sini 👇', 'Langsung order 👇', 'Link 👇', 'Cek link 👇', 'Bisa langsung order 👇', 'Checkout di sini 👇', 'Detail di sini 👇', 'Pesan di sini 👇'],
+    ctaNo: ['Link ada di komentar ya', 'Link di komentar ya', 'Cek link di komentar', 'Link order di komentar']
+  };
+
+  // Pilihan redaksi dikunci sampai "Ganti redaksi" ditekan, supaya teks tidak berubah-ubah saat mengetik
+  const sel = {}, last = {};
+  const rnd = (n) => Math.floor(Math.random() * n);
+  function roll() {
+    for (const k of Object.keys(BANK)) {
+      let i;
+      do { i = rnd(BANK[k].length); } while (i === last[k] && BANK[k].length > 1);
+      sel[k] = last[k] = i;
+    }
+  }
+
+  // Maksimal 6 kata, teks dalam [ ] dan ( ) dibuang
+  function shortName(title) {
+    const t = title.replace(/\[[^\]]*\]|\([^)]*\)/g, ' ').replace(/[^\w\s\-./]/g, ' ').replace(/\s+/g, ' ').trim();
+    return t.split(' ').slice(0, 6).join(' ');
+  }
+
+  // "77001" atau "Rp77.001 - Rp97.501" -> "77.001"
+  function formatPrice(raw) {
+    const first = String(raw).split(/[-–—]/)[0];
+    const digits = first.replace(/\D/g, '');
+    return digits ? new Intl.NumberFormat('id-ID').format(parseInt(digits, 10)) : '';
+  }
+
+  function grow() { out.style.height = 'auto'; out.style.height = Math.max(120, out.scrollHeight) + 'px'; }
+
+  function render() {
+    const name = shortName(nameEl.value);
+    const price = formatPrice(priceEl.value);
+    const link = linkEl.value.trim();
+    if (!name) {
+      out.value = '';
+    } else {
+      const lines = [BANK.openers[sel.openers] + ', ' + name + ' ✅'];
+      if (price) lines.push(BANK.prices[sel.prices].replace('{p}', price));
+      lines.push(link ? BANK.cta[sel.cta] : BANK.ctaNo[sel.ctaNo]);
+      if (link) lines.push(link);
+      out.value = lines.join('\n');
+    }
+    btnCopy.disabled = btnRoll.disabled = !name;
+    grow();
+  }
+
+  nameEl.addEventListener('input', render);
+  linkEl.addEventListener('input', render);
+  priceEl.addEventListener('input', () => {
+    const p = formatPrice(priceEl.value);
+    priceEl.value = p;
+    render();
+  });
+  out.addEventListener('input', grow);
+
+  btnRoll.addEventListener('click', () => { roll(); render(); });
+
+  btnCopy.addEventListener('click', async () => {
+    const text = out.value;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      out.focus(); out.select(); document.execCommand('copy'); out.setSelectionRange(0, 0);
+    }
+    btnCopy.textContent = 'Tersalin';
+    btnCopy.classList.add('done');
+    setTimeout(() => { btnCopy.textContent = 'Salin balasan'; btnCopy.classList.remove('done'); }, 1800);
+  });
+
+  $('btn-clear').addEventListener('click', () => {
+    nameEl.value = priceEl.value = linkEl.value = '';
+    roll(); render(); nameEl.focus();
+  });
+
+  roll(); render();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
