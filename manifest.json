@@ -1,16 +1,23 @@
 {
-  "name": "Reply Generator",
-  "short_name": "Reply Generator",
-  "description": "Pembuat balasan affiliate Shopee untuk komentar Facebook",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#f2f3f5",
-  "theme_color": "#ee4d2d",
-  "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  "manifest_version": 3,
+  "name": "Reply Fb",
+  "version": "1.6",
+  "description": "Ambil data produk Shopee, download gambar, dan buat balasan singkat (READY, dsb) untuk komentar FB Group.",
+  "permissions": ["activeTab", "downloads", "storage"],
+  "host_permissions": [
+    "*://shopee.co.id/*",
+    "*://shopee.com/*",
+    "https://*.susercontent.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.openai.com/*",
+    "https://openrouter.ai/*",
+    "https://api.codebuddy.com/*"
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "Reply Fb" },
+  "content_scripts": [
+    {
+      "matches": ["*://shopee.co.id/*", "*://shopee.com/*"],
+      "js": ["content.js"]
+    }
   ]
 }
