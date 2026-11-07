@@ -67,6 +67,11 @@
             box-shadow: 0 2px 4px rgba(24, 119, 242, 0.3);
         }
         .btn-primary:hover { background-color: var(--primary-dark); }
+        select {
+            width: 100%; padding: 10px 12px; border: 1.5px solid #ccd0d5; border-radius: 8px;
+            font-size: 14px; font-family: inherit; background: #fff; color: var(--text);
+        }
+        select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15); }
         .hint { font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.4; }
         
         .option-card {
@@ -108,6 +113,15 @@
         <div class="hint">💡 Tips: Tekan lama di area teks lalu pilih "Tempel" jika tombol otomatis tidak merespons.</div>
     </div>
 
+    <div class="card">
+        <label for="modeSelect">Mode Balasan</label>
+        <select id="modeSelect">
+            <option value="noprice" selected>Tanpa harga, bikin penasaran (disarankan)</option>
+            <option value="mix">Campur (tanpa harga lebih sering)</option>
+            <option value="price">Dengan harga (gaya lama)</option>
+        </select>
+    </div>
+
     <button class="btn-primary" onclick="generateReply()">✨ Generate Reply</button>
 
     <div id="outputContainer" style="margin-top: 20px; display: none;">
@@ -141,6 +155,31 @@
             'Langsung order 👇', 'Link 👇', 'Cek link 👇', 
             'Ambil di sini 👇', 'Checkout di sini 👇', 'Dapatkan di sini 👇', 'Beli di sini 👇'
         ];
+
+        // Template tanpa harga: ramah, santai, dan memancing rasa penasaran
+        const noPriceStyles = [
+            { name: 'Penasaran', t: 'Kak, soal {nama} ini menarik banget sebenarnya, ada satu detail yang sering kelewat. Coba lihat sendiri di sini ya 👇\n{link}' },
+            { name: 'Santai', t: 'Kemarin sempat nemu {nama} dan langsung kepikiran kakak 😄 fotonya lengkap, intip dulu deh\n{link}' },
+            { name: 'Ajakan Halus', t: 'Sebelum kehabisan, cek dulu yang ini kak. {nama}, pilihannya lumayan jarang ketemu 👇\n{link}' },
+            { name: 'Ramah', t: 'Wah kebetulan banget, kayaknya ini yang kakak cari 😊 {nama}. Detail sama pilihannya ada di link ini, mampir dulu aja\n{link}' },
+            { name: 'Sapaan Hangat', t: 'Hai kak 👋 masih ada kok. Lihat dulu {nama} di sini, siapa tahu cocok. Ada bagian yang menurutku bikin beda 👇\n{link}' },
+            { name: 'Pelan-pelan', t: 'Pilih pelan-pelan aja ya kak 😁 tapi {nama} ini sayang kalau nggak diintip dulu. Cek di sini\n{link}' },
+            { name: 'Ikut Penasaran', t: 'Aku juga sempat penasaran sama {nama}. Coba buka halamannya, detailnya lumayan lengkap 👇\n{link}' },
+            { name: 'Sopan', t: 'Boleh banget kak, ini linknya ya 🙏 {nama}. Ada foto dan ulasan pembeli lain di sana, lumayan buat pertimbangan\n{link}' },
+            { name: 'Bikin Klik', t: 'Eh iya, yang ini nih kak 😄 {nama}. Coba cek bagian ulasannya, seru dibaca\n{link}' },
+            { name: 'Salam Kenal', t: 'Salam kenal kak 🙏 buat {nama}, langsung lihat detailnya di sini aja, nanti kakak bisa nilai sendiri cocok atau enggak 👇\n{link}' },
+            { name: 'Santai Banget', t: 'Penasaran sama {nama}? Aku taruh linknya di sini, intip aja dulu nggak ada ruginya 😊\n{link}' },
+            { name: 'Ada Kejutan', t: 'Ada kok kak 👍 tapi mending lihat langsung di sini, soalnya pilihannya lumayan banyak dan ada yang baru 👇\n{link}' }
+        ];
+        let lastNoPrice = -1;
+
+        function pickNoPrice() {
+            let i;
+            do { i = Math.floor(Math.random() * noPriceStyles.length); }
+            while (i === lastNoPrice && noPriceStyles.length > 1);
+            lastNoPrice = i;
+            return noPriceStyles[i];
+        }
 
         function getRandomOpening() {
             let pick;
@@ -203,11 +242,17 @@
             }
 
             const info = extractProductInfo(input);
+            const mode = document.getElementById('modeSelect').value;
+            const useNoPrice = mode === 'noprice' || (mode === 'mix' && Math.random() < 0.7);
             const style = Math.floor(Math.random() * 3) + 1;
             let resultText = '';
             let styleName = '';
 
-            if (style === 1) {
+            if (useNoPrice) {
+                const pick = pickNoPrice();
+                styleName = pick.name;
+                resultText = pick.t.replace('{nama}', info.productName).replace('{link}', info.link);
+            } else if (style === 1) {
                 styleName = 'Gaya Standar';
                 const op1Opening = getRandomOpening();
                 const op1Price = getRandomItem(priceTemplates).replace('{price}', info.price);
