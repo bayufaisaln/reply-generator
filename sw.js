@@ -1,5 +1,5 @@
 // Service worker Reply Fb: online dulu, cadangan dari cache saat offline
-const CACHE = 'reply-fb-v7';
+const CACHE = 'reply-fb-v8';
 const FILES = [
   './',
   './index.html',

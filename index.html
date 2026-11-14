@@ -113,85 +113,54 @@
         <div class="hint">💡 Tips: Tekan lama di area teks lalu pilih "Tempel" jika tombol otomatis tidak merespons.</div>
     </div>
 
-    <div class="card">
-        <label for="modeSelect">Mode Balasan</label>
-        <select id="modeSelect">
-            <option value="noprice" selected>Tanpa harga, bikin penasaran (disarankan)</option>
-            <option value="mix">Campur (tanpa harga lebih sering)</option>
-            <option value="price">Dengan harga (gaya lama)</option>
-        </select>
-    </div>
-
     <button class="btn-primary" onclick="generateReply()">✨ Generate Reply</button>
 
     <div id="outputContainer" style="margin-top: 20px; display: none;">
         <div class="option-header">
             <div class="option-label">Hasil Rekomendasi</div>
-            <div class="style-badge" id="styleBadge">Gaya Standar</div>
         </div>
-        
-        <div class="option-card">
-            <div class="option-text" id="singleOutput"></div>
-            <button class="btn-copy" onclick="copyOption('singleOutput', this)">📋 Salin Balasan</button>
-        </div>
-        <div class="hint" style="text-align: center; margin-top: 10px;">Kurang suka? Tekan tombol <b>Generate Reply</b> lagi untuk gaya acak lainnya!</div>
+        <div id="optionsList"></div>
+        <div class="hint" style="text-align: center; margin-top: 10px;">Kurang cocok? Tekan <b>Generate Reply</b> lagi untuk opsi lainnya.</div>
     </div>
 
     <script>
-        const openings = [
-            'READY', 'READY STOCK', 'Ready', 'Ready ya', 
-            'Stok ready', 'Stok aman', 'Masih ready', 'Masih tersedia', 
-            'Tersedia', 'Available', 'Barang ready', 'Ready stock'
+        // Template tanpa harga: redaksi ready / barang ada / cocok sesuai, tanpa panggilan, minim emoji
+        const templates = [
+            'Ready, {nama}. Barangnya ada, detailnya bisa dicek di sini\n{link}',
+            'Barang ada, masih ready. Untuk {nama}, lihat dulu spesifikasinya apakah cocok\n{link}',
+            'Ready stock. {nama} ini kemungkinan cocok dengan yang dicari, cek langsung di sini\n{link}',
+            'Masih tersedia. {nama}, ada beberapa pilihan yang bisa disesuaikan, lihat di sini 👇\n{link}',
+            'Barangnya ada. Silakan cek {nama}, mungkin sesuai kebutuhan\n{link}',
+            'Ready ya. Coba lihat {nama} dulu, ada detail menarik di halamannya\n{link}',
+            'Stok ada. {nama} cocok untuk yang lagi cari model seperti ini, cek di sini\n{link}',
+            'Ada, masih ready. Lihat dulu {nama}, nanti bisa dinilai sendiri cocok atau tidak\n{link}',
+            'Ready. Ada ulasan pembeli lain untuk {nama}, bisa jadi pertimbangan\n{link}',
+            'Barang ada dan sesuai deskripsi. Detail {nama} lengkap di sini 👇\n{link}',
+            'Masih ada. {nama}, fotonya lengkap, bisa dicocokkan dengan yang dibutuhkan\n{link}',
+            'Tersedia. Ada satu bagian di {nama} yang sering terlewat, cek sendiri di sini\n{link}',
+            'Ready stock, tinggal pilih yang cocok. {nama}\n{link}',
+            'Stok masih ada. Pilihan {nama} lumayan lengkap, silakan dicek\n{link}',
+            'Ada. Untuk {nama}, lihat variasi dan ulasannya dulu supaya pas dengan kebutuhan\n{link}',
+            'Ready, barang ada. Biar tidak salah pilih, cek detail {nama} di sini\n{link}',
+            'Masih ready. Coba lihat {nama}, siapa tahu sesuai yang sedang dicari\n{link}',
+            'Barang tersedia. {nama} ini banyak yang tanya, detailnya ada di sini 👇\n{link}',
+            'Ada stoknya. Silakan intip {nama}, nanti kelihatan cocok atau belum\n{link}',
+            'Ready ya, barang ada. Spesifikasi {nama} lengkap di halaman ini\n{link}'
         ];
-        let lastOpening = '';
+        const OPTION_COUNT = 6;
+        let lastPicked = [];
 
-        const priceTemplates = [
-            '{price}', 'Harga {price}', 'Cuma {price}', 'Mulai {price}', 
-            '{price} aja', 'Hanya {price}', 'Harga mulai {price}'
-        ];
-
-        const ctas = [
-            'Cek di sini 👇', 'Silakan cek 👇', 'Order di sini 👇', 
-            'Langsung order 👇', 'Link 👇', 'Cek link 👇', 
-            'Ambil di sini 👇', 'Checkout di sini 👇', 'Dapatkan di sini 👇', 'Beli di sini 👇'
-        ];
-
-        // Template tanpa harga: ramah, santai, dan memancing rasa penasaran
-        const noPriceStyles = [
-            { name: 'Penasaran', t: 'Kak, soal {nama} ini menarik banget sebenarnya, ada satu detail yang sering kelewat. Coba lihat sendiri di sini ya 👇\n{link}' },
-            { name: 'Santai', t: 'Kemarin sempat nemu {nama} dan langsung kepikiran kakak 😄 fotonya lengkap, intip dulu deh\n{link}' },
-            { name: 'Ajakan Halus', t: 'Sebelum kehabisan, cek dulu yang ini kak. {nama}, pilihannya lumayan jarang ketemu 👇\n{link}' },
-            { name: 'Ramah', t: 'Wah kebetulan banget, kayaknya ini yang kakak cari 😊 {nama}. Detail sama pilihannya ada di link ini, mampir dulu aja\n{link}' },
-            { name: 'Sapaan Hangat', t: 'Hai kak 👋 masih ada kok. Lihat dulu {nama} di sini, siapa tahu cocok. Ada bagian yang menurutku bikin beda 👇\n{link}' },
-            { name: 'Pelan-pelan', t: 'Pilih pelan-pelan aja ya kak 😁 tapi {nama} ini sayang kalau nggak diintip dulu. Cek di sini\n{link}' },
-            { name: 'Ikut Penasaran', t: 'Aku juga sempat penasaran sama {nama}. Coba buka halamannya, detailnya lumayan lengkap 👇\n{link}' },
-            { name: 'Sopan', t: 'Boleh banget kak, ini linknya ya 🙏 {nama}. Ada foto dan ulasan pembeli lain di sana, lumayan buat pertimbangan\n{link}' },
-            { name: 'Bikin Klik', t: 'Eh iya, yang ini nih kak 😄 {nama}. Coba cek bagian ulasannya, seru dibaca\n{link}' },
-            { name: 'Salam Kenal', t: 'Salam kenal kak 🙏 buat {nama}, langsung lihat detailnya di sini aja, nanti kakak bisa nilai sendiri cocok atau enggak 👇\n{link}' },
-            { name: 'Santai Banget', t: 'Penasaran sama {nama}? Aku taruh linknya di sini, intip aja dulu nggak ada ruginya 😊\n{link}' },
-            { name: 'Ada Kejutan', t: 'Ada kok kak 👍 tapi mending lihat langsung di sini, soalnya pilihannya lumayan banyak dan ada yang baru 👇\n{link}' }
-        ];
-        let lastNoPrice = -1;
-
-        function pickNoPrice() {
-            let i;
-            do { i = Math.floor(Math.random() * noPriceStyles.length); }
-            while (i === lastNoPrice && noPriceStyles.length > 1);
-            lastNoPrice = i;
-            return noPriceStyles[i];
-        }
-
-        function getRandomOpening() {
-            let pick;
-            do {
-                pick = openings[Math.floor(Math.random() * openings.length)];
-            } while (pick === lastOpening && openings.length > 1);
-            lastOpening = pick;
-            return pick;
-        }
-
-        function getRandomItem(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
+        function pickTemplates(n) {
+            // acak, hindari yang baru saja dipakai di generate sebelumnya
+            const fresh = templates.filter(t => !lastPicked.includes(t));
+            const pool = (fresh.length >= n ? fresh : templates).slice();
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            const picked = pool.slice(0, n);
+            lastPicked = picked;
+            return picked;
         }
 
         async function pasteText() {
@@ -212,9 +181,6 @@
             const linkMatch = input.match(/https?:\/\/[^\s]+/);
             const link = linkMatch ? linkMatch[0] : 'https://s.shopee.co.id/xxxx';
 
-            const priceMatch = input.match(/Rp[\d\.]+/);
-            const price = priceMatch ? priceMatch[0] : 'Rp0';
-
             let cleanText = input
                 .replace(/\[.*?\]/g, '')       
                 .replace(/\(.*?\)/g, '')       
@@ -231,7 +197,7 @@
             
             const productName = words.slice(0, 6).join(' ') || 'Produk';
 
-            return { link, price, productName };
+            return { link, productName };
         }
 
         function generateReply() {
@@ -242,68 +208,61 @@
             }
 
             const info = extractProductInfo(input);
-            const mode = document.getElementById('modeSelect').value;
-            const useNoPrice = mode === 'noprice' || (mode === 'mix' && Math.random() < 0.7);
-            const style = Math.floor(Math.random() * 3) + 1;
-            let resultText = '';
-            let styleName = '';
+            const list = document.getElementById('optionsList');
+            list.innerHTML = '';
 
-            if (useNoPrice) {
-                const pick = pickNoPrice();
-                styleName = pick.name;
-                resultText = pick.t.replace('{nama}', info.productName).replace('{link}', info.link);
-            } else if (style === 1) {
-                styleName = 'Gaya Standar';
-                const op1Opening = getRandomOpening();
-                const op1Price = getRandomItem(priceTemplates).replace('{price}', info.price);
-                const op1Cta = getRandomItem(ctas);
-                resultText = `${op1Opening}, ${info.productName} ✅\n${op1Price}\n${op1Cta}\n${info.link}`;
-            } else if (style === 2) {
-                styleName = 'Singkat & Padat';
-                const op2Opening = getRandomItem(['Ready ✅', 'Stok aman ✅', 'Masih ready ✅']);
-                resultText = `${op2Opening} ${info.productName}\n${info.price}\n${info.link}`;
-            } else {
-                styleName = 'Antusias & Ramah';
-                const op3Opening = getRandomItem(['Halo! Stok masih tersedia', 'Hai kak, barang masih ready', 'Yuk, masih bisa diorder']);
-                resultText = `${op3Opening} ✅\n${info.productName}\nCuma ${info.price} lho!\nLangsung amankan di sini 👇\n${info.link}`;
-            }
+            pickTemplates(OPTION_COUNT).forEach((t, i) => {
+                const text = t.replace('{nama}', info.productName).replace('{link}', info.link);
 
-            document.getElementById('singleOutput').textContent = resultText;
-            document.getElementById('styleBadge').textContent = styleName;
-            document.getElementById('outputContainer').style.display = 'block';
+                const card = document.createElement('div');
+                card.className = 'option-card';
 
-            const btn = document.querySelector('.btn-copy');
-            btn.textContent = '📋 Salin Balasan';
-            btn.classList.remove('copied');
+                const head = document.createElement('div');
+                head.className = 'option-header';
+                const badge = document.createElement('div');
+                badge.className = 'style-badge';
+                badge.textContent = 'Opsi ' + (i + 1);
+                head.appendChild(badge);
 
-            document.getElementById('outputContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const body = document.createElement('div');
+                body.className = 'option-text';
+                body.textContent = text;
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-copy';
+                btn.textContent = 'Salin Balasan';
+                btn.onclick = () => copyText(body.textContent, btn);
+
+                card.append(head, body, btn);
+                list.appendChild(card);
+            });
+
+            const out = document.getElementById('outputContainer');
+            out.style.display = 'block';
+            out.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        async function copyOption(elementId, btnElement) {
-            const text = document.getElementById(elementId).textContent;
+        function flashCopied(btn) {
+            btn.textContent = 'Berhasil Disalin';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Salin Balasan';
+                btn.classList.remove('copied');
+            }, 1500);
+        }
+
+        async function copyText(text, btn) {
             try {
                 await navigator.clipboard.writeText(text);
-                btnElement.textContent = '✅ Berhasil Disalin!';
-                btnElement.classList.add('copied');
-                setTimeout(() => {
-                    btnElement.textContent = '📋 Salin Balasan';
-                    btnElement.classList.remove('copied');
-                }, 1500);
             } catch (err) {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
                 document.execCommand('copy');
-                document.body.removeChild(textarea);
-                
-                btnElement.textContent = '✅ Berhasil Disalin!';
-                btnElement.classList.add('copied');
-                setTimeout(() => {
-                    btnElement.textContent = '📋 Salin Balasan';
-                    btnElement.classList.remove('copied');
-                }, 1500);
+                document.body.removeChild(ta);
             }
+            flashCopied(btn);
         }
 
         if ('serviceWorker' in navigator) {
